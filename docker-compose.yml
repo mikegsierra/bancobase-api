@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: "bancobase"
+      MYSQL_USER: "dev"
+      MYSQL_PASSWORD: "@b4nc0_b4s3$123"
+      MYSQL_ROOT_PASSWORD: "pr0s4p0p3y4@890"
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - data_volume:/var/lib/mysql
+volumes:
+  data_volume:
