@@ -35,7 +35,7 @@ public class CustomerController {
     @GetMapping("/{customerId}/accounts")
     public ArrayList<Account> getAccountsByCustomerId(@PathVariable("customerId") long customerId,
             @RequestParam(required = false, defaultValue = "MXN") CurrencyCode currencyCode) {
-        System.out.println("Entro comoquiera perro");
+
         return service.getAccountsByCustomerIdAndCurrency(customerId, currencyCode);
     }
 }

@@ -1,19 +1,36 @@
-version: "3.3"
+version: "3.8"
 services:
-  db:
+  mysqldb:
     image: mysql:latest
-    container_name: mysql-db
+    container_name: bancobase-mysql-db
     restart: always
     environment:
       MYSQL_DATABASE: "bancobase"
       MYSQL_USER: "dev"
       MYSQL_PASSWORD: "@b4nc0_b4s3$123"
       MYSQL_ROOT_PASSWORD: "pr0s4p0p3y4@890"
+    networks:
+      - bancobase-mysql
     ports:
       - "3306:3306"
     expose:
       - "3306"
     volumes:
       - data_volume:/var/lib/mysql
+  app:
+    networks:
+      - bancobase-mysql
+    depends_on:
+      - mysqldb
+    build: ../bancobase-api
+    restart: on-failure
+    ports:
+      - 8080:8080
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
 volumes:
   data_volume:
+networks:
+  bancobase-mysql:
