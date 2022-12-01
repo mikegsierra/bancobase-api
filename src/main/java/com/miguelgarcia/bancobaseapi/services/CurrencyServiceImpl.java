@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.miguelgarcia.bancobaseapi.dto.TotalDescriptive;
 import com.miguelgarcia.bancobaseapi.enums.CurrencyCode;
 
 @Service
@@ -21,7 +22,19 @@ public class CurrencyServiceImpl implements CurrencyService {
             Map.entry(CurrencyCode.EUR, EUR_VALUE)));
 
     @Override
-    public Double getCurrencyValueByCode(CurrencyCode currency) {
+    public TotalDescriptive calculateTotalByCurrency(Double value, CurrencyCode currencyCode) {
+        TotalDescriptive totalDescriptive = new TotalDescriptive();
+        Double newTotalWithCurrency = this.changeCurrencyValueByCode(value,
+                currencyCode);
+        totalDescriptive.setTotal(newTotalWithCurrency);
+
+        String totalFormatted = this.formatValueByCurrencyCode(newTotalWithCurrency, currencyCode);
+        totalDescriptive.setTotalText(totalFormatted);
+
+        return totalDescriptive;
+    }
+
+    private Double getCurrencyValueByCode(CurrencyCode currency) {
         return currenciesMap.get(currency);
     }
 
@@ -44,8 +57,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyFormatter.format(value);
     }
 
-    @Override
-    public Double changeCurrencyValueByCode(Double value, CurrencyCode currencyCode) {
+    private Double changeCurrencyValueByCode(Double value, CurrencyCode currencyCode) {
         Double currencyValue = this.getCurrencyValueByCode(currencyCode);
         return value * currencyValue;
     }

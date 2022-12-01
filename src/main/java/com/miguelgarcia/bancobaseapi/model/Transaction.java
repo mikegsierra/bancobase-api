@@ -1,13 +1,12 @@
 package com.miguelgarcia.bancobaseapi.model;
 
 import java.util.Date;
-import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,11 +14,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 
 @Entity
-public class Account {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,29 +31,29 @@ public class Account {
     private String cardNumber;
 
     @Column(nullable = false)
-    private Double balance;
+    private Double amount;
 
     @Transient
-    private String balanceText;
+    private String amountText;
 
     @CreationTimestamp
     @Column(nullable = false)
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "customerId", nullable = false)
+    @JoinColumn(name = "accountId", nullable = false)
     @JsonBackReference
-    private Customer customer;
+    private Account account;
 
-    @OneToMany(mappedBy = "account")
-    @JsonIgnore
-    private Set<Transaction> transactions;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private TransactionCategory category;
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -74,44 +73,44 @@ public class Account {
         this.cardNumber = cardNumber;
     }
 
-    public Double getBalance() {
-        return this.balance;
+    public Double getAmount() {
+        return this.amount;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public String getAmountText() {
+        return this.amountText;
+    }
+
+    public void setAmountText(String amountText) {
+        this.amountText = amountText;
     }
 
     public Date getCreatedAt() {
         return this.createdAt;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public String getBalanceText() {
-        return this.balanceText;
-    }
-
-    public void setBalanceText(String balanceText) {
-        this.balanceText = balanceText;
-    }
-
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Set<Transaction> getTransactions() {
-        return this.transactions;
+    public Account getAccount() {
+        return this.account;
     }
 
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public TransactionCategory getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(TransactionCategory category) {
+        this.category = category;
     }
 
 }
