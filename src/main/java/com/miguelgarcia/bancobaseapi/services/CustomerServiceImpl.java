@@ -1,7 +1,7 @@
 package com.miguelgarcia.bancobaseapi.services;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,6 +60,8 @@ public class CustomerServiceImpl implements CustomerService {
         ArrayList<ExpenseProjection> expenses = (ArrayList<ExpenseProjection>) accountRepository
                 .findExpensesByCategory(accountId);
 
+        Double totalExpense = expenses.stream().mapToDouble(x -> x.getTotal()).sum();
+
         return (ArrayList<Expense>) expenses.stream().map(projection -> {
             Expense expense = new Expense(projection);
 
@@ -67,6 +69,10 @@ public class CustomerServiceImpl implements CustomerService {
                     currencyCode);
             expense.setTotal(totalDescriptive.getTotal());
             expense.setTotalText(totalDescriptive.getTotalText());
+
+            String percentage = this.getValuePercentage(totalDescriptive.getTotal(), totalExpense);
+            String nameWithPercentage = expense.getName() + " - " + percentage;
+            expense.setName(nameWithPercentage);
 
             return expense;
         }).collect(Collectors.toList());
@@ -85,6 +91,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     private Double sumTotalBalanceFromAccounts(ArrayList<Account> accounts) {
         return accounts.stream().mapToDouble(x -> x.getBalance()).sum();
+    }
+
+    private String getValuePercentage(Double value, Double total) {
+        Double percentage = (value / total);
+
+        NumberFormat defaultFormat = NumberFormat.getPercentInstance();
+        defaultFormat.setMinimumFractionDigits(1);
+
+        return defaultFormat.format(percentage);
     }
 
 }

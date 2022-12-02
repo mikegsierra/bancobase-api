@@ -28,9 +28,6 @@ public class Transaction {
     private String name;
 
     @Column(nullable = false)
-    private String cardNumber;
-
-    @Column(nullable = false)
     private Double amount;
 
     @Transient
@@ -63,14 +60,6 @@ public class Transaction {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCardNumber() {
-        return this.cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
     }
 
     public Double getAmount() {
