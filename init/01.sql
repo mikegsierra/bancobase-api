@@ -21,33 +21,38 @@ CREATE TABLE `account` (
 
 -- bancobase.transaction_category definition
 CREATE TABLE `transaction_category` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `name` varchar(20) NOT NULL,
+    `id` smallint NOT NULL AUTO_INCREMENT,
     `code` varchar(15) NOT NULL,
-    `active` bit(1) NOT NULL DEFAULT b '1',
+    `name` varchar(20) NOT NULL,
+    `active` tinyint NOT NULL DEFAULT '1',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 6 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
--- bancobase.transaction_category definition
-CREATE TABLE `transaction_category` (
+-- bancobase.`transaction` definition
+CREATE TABLE `transaction` (
     `id` bigint NOT NULL AUTO_INCREMENT,
-    `name` varchar(20) NOT NULL,
-    `code` varchar(15) NOT NULL,
-    `active` bit(1) NOT NULL DEFAULT b '1',
+    `account_id` bigint NOT NULL,
+    `category_id` smallint NOT NULL,
+    `amount` decimal(12, 2) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 6 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+    PRIMARY KEY (`id`),
+    KEY `transaction_FK` (`account_id`),
+    KEY `transaction_FK_1` (`category_id`),
+    CONSTRAINT `transaction_FK` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+    CONSTRAINT `transaction_FK_1` FOREIGN KEY (`category_id`) REFERENCES `transaction_category` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 -- bancobase.customer population
 INSERT INTO
-    bancobase.customer (name, created_at)
+    bancobase.customer (id, name)
 VALUES
-    ('John Doe', '2022-11-29 19:01:12');
+    (1, 'John Doe');
 
 -- bancobase.account population
 INSERT INTO
     bancobase.account (
+        id,
         name,
         card_number,
         balance,
@@ -55,33 +60,36 @@ INSERT INTO
     )
 VALUES
     (
+        1,
         'Empresarial',
         '**** 1106',
-        256790.34,
+        0.0,
         1
     ),
     (
+        2,
         'Cuenta de ahorro',
         '**** 2456',
-        156902.09,
+        0.0,
         1
     ),
     (
+        3,
         'Cuenta familiar',
         '**** 3410',
-        98872.65,
+        0.0,
         1
     );
 
 -- bancobase.transaction_category population
 INSERT INTO
-    bancobase.transaction_category (name, code)
+    bancobase.transaction_category (id, name, code)
 VALUES
-    ('Educación', 'education'),
-    ('Viajes', 'travel'),
-    ('Comida', 'food'),
-    ('Gasolina', 'gas'),
-    ('Otros', 'other');
+    (1, 'Educación', 'education'),
+    (2, 'Viajes', 'travel'),
+    (3, 'Comida', 'food'),
+    (4, 'Gasolina', 'gas'),
+    (5, 'Otros', 'other');
 
 -- bancobase.transaction population
 INSERT INTO
